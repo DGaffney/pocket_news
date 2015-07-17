@@ -1,0 +1,25 @@
+<h2>Read / Don't Read</h2>
+<p>Topics I read about versus topics I pocket and forget about</p>
+<div class="row">
+  <div class="span6">
+      <h3>Read</h3>
+    <ul id="<%= name %>-read">
+    </ul>
+  </div>
+  <div class="span6">
+    <h3>Don't Read</h3>
+    <ul id="<%= name %>-dont-read">
+    </ul>
+  </div>  
+</div>
+<script>
+$.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+  var data = $.parseJSON(result)
+  for (i = 0; i < data["read"].length; i++){
+    $( "#<%= name %>-read" ).append( "<li><b><a href='http://"+data["read"][i][0]+"'>"+data["read"][i][0]+"</a></b>: "+data["read"][i][1]+" times</li>" );
+  }
+  for (i = 0; i < data["dont_read"].length; i++){
+    $( "#<%= name %>-dont-read" ).append( "<li><b><a href='http://"+data["dont_read"][i][0]+"'>"+data["dont_read"][i][0]+"</a></b>: "+data["dont_read"][i][1]+" times</li>" );
+  }
+}});
+</script>

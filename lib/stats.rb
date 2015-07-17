@@ -111,4 +111,20 @@ class Stats
   def punchcard(username)
     {added: punchcard_added(username), read: punchcard_read(username)}
   end
+
+  def topics_i_dont_read(username)
+    item_ids = Article.where(username: username, :time_read => nil).fields(:item_id).collect(&:item_id)
+    Hash[ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
+  end
+  
+  def topics_i_read(username)
+    item_ids = Article.where(username: username, :time_read.ne => nil).fields(:item_id).collect(&:item_id)
+    Hash[ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
+  end
+  
+  def read_dont_read(username)
+    dont_read = topics_i_dont_read(username)
+    read = topics_i_read(username)
+    {dont_read: dont_read.reject{|k,v| read.keys.include?(k)}.to_a, read: read.reject{|k,v| dont_read.keys.include?(k)}.to_a}
+  end
 end

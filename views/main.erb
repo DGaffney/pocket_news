@@ -1,4 +1,8 @@
-<%= partial :"partials/_punchcard", locals: {name: "punchcard", user_id: @user.id} %>
+<div class="row">
+  <div class="span12">
+    <%= partial :"partials/_punchcard", locals: {name: "punchcard", user_id: @user.id} %>
+  </div>
+</div>
 <div class="row">
   <div class="span12">
     <%= partial :"partials/_timeline", locals: {name: "timeline", user_id: @user.id} %>
@@ -12,6 +16,7 @@
     <%= partial :"partials/_word_counts", locals: {name: "word_counts", user_id: @user.id} %>
   </div>
 </div>
+<%= partial :"partials/_read_dont_read", locals: {name: "read_dont_read", user_id: @user.id} %>
 <div class="row">
   <div class="span8">
     <%= partial :"partials/_top_terms", locals: {name: "top_terms", user_id: @user.id} %>
