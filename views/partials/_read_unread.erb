@@ -1,12 +1,13 @@
 <script>
   $.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
     var parsed = $.parseJSON(result)
-    var data = [{"label":"Read "+parsed["read_pct"], "value":parsed["read"]}, 
-            {"label":"Unread "+parsed["unread_pct"], "value":parsed["unread"]}];
+    var data = [{"label":"Read "+parsed["read_pct"], "value":parsed["read"], "color": "#ed4255"}, 
+            {"label":"Unread "+parsed["unread_pct"], "value":parsed["unread"], "color": "#fbb64a"}];
     nv.addGraph(function() {
       var chart = nv.models.pieChart()
           .x(function(d) { return d.label })
           .y(function(d) { return d.value })
+          .color(function(d) { return d.color })
           .showLabels(true);
 
         d3.select("#<%= name %> svg")
@@ -18,7 +19,7 @@
     });
   }});
 </script>
-<h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
-<div id="<%= name %>" style="width:600px;height:800px">
-  <svg style="height:500px;width:800px"></svg>
+<h2>Read/Unread Articles</h2>
+<div id="<%= name %>" style="width:400px;height:400px">
+  <svg style="height:400px;width:400px"></svg>
 </div>

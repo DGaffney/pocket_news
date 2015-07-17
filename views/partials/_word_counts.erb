@@ -1,16 +1,21 @@
+<style>
+  .bar rect {
+    fill: "#50bbb6";
+  }
+</style>
 <script>
   $.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
     var parsed = $.parseJSON(result)
     var values = parsed["read"];
     var formatCount = d3.format(",.0f");
     var margin = {top: 10, right: 30, bottom: 30, left: 30},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 520 - margin.left - margin.right,
+        height = 460 - margin.top - margin.bottom;
     var x = d3.scale.linear()
         .domain([parsed["read_min"], parsed["read_max"]])
         .range([0, width]);
     var data = d3.layout.histogram()
-        .bins(x.ticks(20))
+        .bins(x.ticks(10))
         (values);
     var y = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.y; })])
@@ -42,11 +47,24 @@
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
+    svg.append("g")
+	  .attr("class", "y axis")
+	  .attr("transform", "translate(0,0)")
+	  .call(yAxis);
+    svg.append("text")
+	  .attr("class", "ylabel")
+	  .attr("y", 0 - margin.left) // x and y switched due to rotation
+	  .attr("x", 0 - (height / 2))
+	  .attr("dy", "1em")
+	  .attr("transform", "rotate(-90)")
+	  .style("text-anchor", "middle")
+	  .text("# of fill-ups");  
 
     
   }});
 </script>
 <h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<p>Distribution of word counts per articles in my Pocket (outliers ommitted)</p>
 <div id="<%= name %>">
   
 </div>

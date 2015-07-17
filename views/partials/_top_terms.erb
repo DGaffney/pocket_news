@@ -1,4 +1,5 @@
 <h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<p>Topics that come up often in my articles</p>
 <div id="<%= name %>">
   
 </div>
@@ -7,8 +8,8 @@
 <script>
 
 var margin = {top: 40, right: 10, bottom: 10, left: 10},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 460 - margin.left - margin.right,
+    height = 460 - margin.top - margin.bottom;
 
 var color = d3.scale.category20c();
 

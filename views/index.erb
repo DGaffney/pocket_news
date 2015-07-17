@@ -1,14 +1,7 @@
+<h1>Pocket Stats</h1>
 <% if @user %>
-  <div class="hero-unit">
-    Signed in as <%= @user.username %>
-  </div>
-  <hr>
   <%= partial :main %>
 <% else %>
-  <a href="/oauth/connect">Sign In</a>
-<div class="hero-unit">
-</div>
-<hr>
 <% end %>
 <footer>
 </footer>

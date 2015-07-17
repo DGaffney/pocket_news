@@ -91,4 +91,24 @@ class Stats
   def sources(username)
     Article.where(username: username).fields(:resolved_url).collect{|a| URI.parse(a.resolved_url).host rescue nil}.compact.counts.sort_by{|k,v| v}.reverse.first(20)
   end
+  
+  def default_punchcard
+    1.upto(24).collect{|x| 0}
+  end
+
+  def punchcard_added(username)
+    result = {}
+    Article.where(username: username, :time_read.ne => nil).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
+    result
+  end
+  
+  def punchcard_read(username)
+    result = {}
+    Article.where(username: username, :time_read.ne => nil).fields(:time_read).collect{|a| a.time_read.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
+    result
+  end
+  
+  def punchcard(username)
+    {added: punchcard_added(username), read: punchcard_read(username)}
+  end
 end
