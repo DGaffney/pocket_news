@@ -1,4 +1,3 @@
-<% @user = User.first %>
 <%= partial :"partials/_word_counts", locals: {name: "word_counts", user_id: @user.id} %>
 <%= partial :"partials/_read_unread", locals: {name: "read_unread", user_id: @user.id} %>
 <%= partial :"partials/_top_terms", locals: {name: "top_terms", user_id: @user.id} %>
