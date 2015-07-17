@@ -1,0 +1,34 @@
+<script>
+  $.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+    var data = $.parseJSON(result)["data"];
+    var tick_values = $.parseJSON(result)["tick_values"];
+    nv.addGraph(function() {
+        var chart = nv.models.lineChart()
+                      .x(function(d) { return d[0] })
+                      .y(function(d) { return d[1] })
+                      .color(d3.scale.category10().range())
+
+         chart.xAxis
+            .tickValues(tick_values)
+            .tickFormat(function(d) {
+                return d3.time.format("%m/%y")(new Date(d))
+              });
+
+        chart.yAxis;
+
+        d3.select('#<%= name %> svg')
+            .datum(data)
+            .call(chart);
+
+        //TODO: Figure out a good way to do this automatically
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+      });
+  }});
+</script>
+<h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<div id="<%= name %>">
+  <svg></svg>
+</div>
+

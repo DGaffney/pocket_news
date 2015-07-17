@@ -1,0 +1,100 @@
+<h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<div class="buttons-container">
+  <button class="btn" id="stop-layout">Stop Layout</button>
+  <button class="btn" id="rescale-graph">Rescale Graph</button>
+</div>
+<div id="<%= name %>" style="background: #222; height: 1000px; width: 1000px;">
+  
+</div>
+<script>
+  $.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+    result = $.parseJSON(result)
+    var sigInst = sigma.init(document.getElementById('<%= name %>')).drawingProperties({
+        edgeColor: 'source',
+        defaultEdgeType: 'curve',
+        defaultLabelColor: '#000',
+        defaultLabelSize: 14,
+        defaultLabelBGColor: '#333',
+        defaultLabelHoverColor: '#000',
+        labelThreshold: 6,
+        defaultEdgeType: 'curve',
+        defaultLabelColor: '#fff',
+        defaultLabelSize: 14,
+        defaultLabelBGColor: '#fff',
+        defaultLabelHoverColor: '#000',
+        labelThreshold: 6,
+        defaultEdgeType: 'curve',
+        borderSize: 1,//Something other than 0
+        nodeBorderColor: "#fff",//exactly like this
+        defaultNodeBorderColor: "#000",//Any color of your choice
+        defaultBorderView: "always"//apply the default color to all nodes always (normal+hover)
+      });
+    for(i = 0; i < result["nodes"].length; i++){
+        sigInst.addNode(result["nodes"][i]["label"],{
+          'x': Math.random(),
+          'y': Math.random(),
+          'size': result["nodes"][i]["size"],
+          'color': result["nodes"][i]["color"]
+    })}
+
+    for(i = 0; i < result["edges"].length; i++){
+      sigInst.addEdge(i,result["edges"][i]["source"],result["edges"][i]["target"]);
+    }
+
+    sigInst.startForceAtlas2();
+    var isRunning = true;
+    var greyColor = '#666';
+    sigInst.bind('overnodes',function(event){
+      var nodes = event.content;
+      var neighbors = {};
+      sigInst.iterEdges(function(e){
+        if(nodes.indexOf(e.source)<0 && nodes.indexOf(e.target)<0){
+          if(!e.attr['grey']){
+            e.attr['true_color'] = e.color;
+            e.color = greyColor;
+            e.attr['grey'] = 1;
+          }
+        }else{
+          e.color = e.attr['grey'] ? e.attr['true_color'] : e.color;
+          e.attr['grey'] = 0;
+
+          neighbors[e.source] = 1;
+          neighbors[e.target] = 1;
+        }
+      }).iterNodes(function(n){
+        if(!neighbors[n.id]){
+          if(!n.attr['grey']){
+            n.attr['true_color'] = n.color;
+            n.color = greyColor;
+            n.attr['grey'] = 1;
+          }
+        }else{
+          n.color = n.attr['grey'] ? n.attr['true_color'] : n.color;
+          n.attr['grey'] = 0;
+        }
+      }).draw(2,2,2);
+    }).bind('outnodes',function(){
+      sigInst.iterEdges(function(e){
+        e.color = e.attr['grey'] ? e.attr['true_color'] : e.color;
+        e.attr['grey'] = 0;
+      }).iterNodes(function(n){
+        n.color = n.attr['grey'] ? n.attr['true_color'] : n.color;
+        n.attr['grey'] = 0;
+      }).draw(2,2,2);
+    });
+    document.getElementById('stop-layout').addEventListener('click',function(){
+        if(isRunning){
+          isRunning = false;
+          sigInst.stopForceAtlas2();
+          document.getElementById('stop-layout').childNodes[0].nodeValue = 'Start Layout';
+        }else{
+          isRunning = true;
+          sigInst.startForceAtlas2();
+          document.getElementById('stop-layout').childNodes[0].nodeValue = 'Stop Layout';
+        }
+      },true);
+      document.getElementById('rescale-graph').addEventListener('click',function(){
+        sigInst.position(0,0,1).draw();
+      },true);
+  }})
+</script>

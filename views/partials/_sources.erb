@@ -1,0 +1,13 @@
+<h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<div id="<%= name %>">
+  <ul id="<%= name %>-list">
+  </ul>
+</div>
+<script>
+$.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+  var data = $.parseJSON(result)
+  for (i = 0; i < data.length; i++){
+    $( "#<%= name %>-list" ).append( "<li><b><a href='http://"+data[i][0]+"'>"+data[i][0]+"</a></b>: "+data[i][1]+" times</li>" );
+  }
+}});
+</script>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Site</title>
+    <%= partial :"layouts/partials/_header" %>
+  </head>
+  <body>
+      <div class="container">
+        <% if session[:user_id] %>
+          <a href="/sign_out">Sign Out</a>
+        <% else %>
+          <a href="/oauth/connect">Log In</a>
+        <% end %>
+        <%= yield %>
+      </div>
+    </body>
+  </body>
+</html>
