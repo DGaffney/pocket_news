@@ -98,7 +98,7 @@ class Stats
 
   def punchcard_added(username)
     result = {}
-    Article.where(username: username, :time_read.ne => nil).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
+    Article.where(username: username).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
     result
   end
   
