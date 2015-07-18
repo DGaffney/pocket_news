@@ -78,7 +78,7 @@ class Stats
   end
   
   def timeline_from_query(query)
-    Article.where(query).fields(:time_added).collect(&:time_added).collect{|t| Time.parse(t.strftime("%Y-%m")+"-01").to_i*1000}.counts.to_a
+    Article.where(query).sort(:time_added).fields(:time_added).collect(&:time_added).collect{|t| Time.parse(t.strftime("%Y-%m")+"-01").to_i*1000}.counts.to_a
   end
 
   def timeline(username)
