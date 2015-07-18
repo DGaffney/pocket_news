@@ -92,19 +92,35 @@ class Stats
     Article.where(username: username).fields(:resolved_url).collect{|a| URI.parse(a.resolved_url).host rescue nil}.compact.counts.sort_by{|k,v| v}.reverse.first(20)
   end
   
+  def weekdays
+    ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  end
+
   def default_punchcard
     1.upto(24).collect{|x| 0}
   end
 
   def punchcard_added(username)
     result = {}
-    Article.where(username: username).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
+    counts = Article.where(username: username).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts
+    weekdays.each do |day|
+      result[day] = {label: day, values: default_punchcard}
+      counts.select{|c| c.first == day}.each do |k,v|
+        result[k.first][:values][k.last.to_i] = v
+      end
+    end
     result
   end
   
   def punchcard_read(username)
     result = {}
-    Article.where(username: username, :time_read.ne => nil).fields(:time_read).collect{|a| a.time_read.strftime("%A %H").split(" ")}.counts.collect{|k,v| result[k.first] ||= {label: k.first, values: default_punchcard};result[k.first][:values][k.last.to_i] = v}
+    counts = Article.where(username: username, :time_read.ne => nil).fields(:time_read).collect{|a| a.time_read.strftime("%A %H").split(" ")}.counts
+    weekdays.each do |day|
+      result[day] = {label: day, values: default_punchcard}
+      counts.select{|c| c.first == day}.each do |k,v|
+        result[k.first][:values][k.last.to_i] = v
+      end
+    end
     result
   end
   
