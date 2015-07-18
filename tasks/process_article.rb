@@ -1,5 +1,6 @@
 class ProcessArticle
   include Sidekiq::Worker
+  sidekiq_options :queue => :pocket_harvester
   
   def perform(article, username, count)
     Article.from_raw(article, username)
