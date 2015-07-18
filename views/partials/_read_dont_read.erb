@@ -16,10 +16,10 @@
 $.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
   var data = $.parseJSON(result)
   for (i = 0; i < data["read"].length; i++){
-    $( "#<%= name %>-read" ).append( "<li><b><a href='http://"+data["read"][i][0]+"'>"+data["read"][i][0]+"</a></b>: "+data["read"][i][1]+" times</li>" );
+    $( "#<%= name %>-read" ).append( "<li><b><a href='https://en.wikipedia.org/w/index.php?search="+data["read"][i][0]+"&title=Special%3ASearch&go=Go'>"+data["read"][i][0]+"</a></b>: "+data["read"][i][1]+" times</li>" );
   }
   for (i = 0; i < data["dont_read"].length; i++){
-    $( "#<%= name %>-dont-read" ).append( "<li><b><a href='http://"+data["dont_read"][i][0]+"'>"+data["dont_read"][i][0]+"</a></b>: "+data["dont_read"][i][1]+" times</li>" );
+    $( "#<%= name %>-dont-read" ).append( "<li><b><a href='https://en.wikipedia.org/w/index.php?search="+data["dont_read"][i][0]+"&title=Special%3ASearch&go=Go'>"+data["dont_read"][i][0]+"</a></b>: "+data["dont_read"][i][1]+" times</li>" );
   }
 }});
 </script>

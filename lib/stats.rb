@@ -141,6 +141,6 @@ class Stats
   def read_dont_read(username)
     dont_read = topics_i_dont_read(username)
     read = topics_i_read(username)
-    {dont_read: dont_read.reject{|k,v| read.keys.include?(k)}.to_a, read: read.reject{|k,v| dont_read.keys.include?(k)}.to_a}
+    {dont_read: dont_read.reject{|k,v| read.keys.include?(k)}.to_a.first(50), read: read.reject{|k,v| dont_read.keys.include?(k)}.to_a.first(50)}
   end
 end
