@@ -1,5 +1,9 @@
 get '/' do
-  @user = User.find(session[:user_id]) if session[:user_id]
+  if params[:user_id]
+    @user = User.find(params[:user_id])
+  elsif session[:user_id]
+    @user = User.find(session[:user_id])
+  end
   redirect '/oauth/connect' if @user.nil?
   erb :"index"
 end
