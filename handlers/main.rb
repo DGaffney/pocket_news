@@ -15,5 +15,5 @@ end
 
 get '/sign_out' do
   session.delete(:session_id)
-  redirect "/"
+  erb :"logout"
 end

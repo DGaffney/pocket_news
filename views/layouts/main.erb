@@ -6,7 +6,7 @@
   </head>
   <body>
       <div class="container">
-        <% if session[:user_id] %>
+        <% if @user %>
           Signed in as <%= @user.username %> | <a href="/sign_out">Sign Out</a>
         <% else %>
           <a href="/oauth/connect">Log In</a>

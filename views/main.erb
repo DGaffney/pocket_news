@@ -1,3 +1,4 @@
+<% if @user %>
 <div class="row">
   <div class="span12">
     <%= partial :"partials/_punchcard", locals: {name: "punchcard", user_id: @user.id} %>
@@ -30,3 +31,4 @@
     <%= partial :"partials/_term_network", locals: {name: "term_network", user_id: @user.id} %>
   </div>
 </div>
+<% end %>
