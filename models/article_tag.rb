@@ -15,7 +15,7 @@ class ArticleTag
   
   def self.from_raw(content, item_id, url)
     obj = self.new
-    self.set_vals(content, item_id, url)
+    self.set_vals(obj, content, item_id, url)
     obj
   end
   
