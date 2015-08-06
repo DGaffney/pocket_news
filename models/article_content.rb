@@ -52,7 +52,7 @@ class ArticleContent
     obj.offset = content.get(:offset)
     obj.lead = content.get(:lead)
     obj.content = content.get(:content)
-    obj.content_stripped = Nokogiri.parse(content.get(:content)).text
+    obj.content_stripped = Nokogiri.parse(content.get(:content)).text if content.get(:content)
     obj.entities = content.get(:entities)
     obj.favicon_colors = content.get(:favicon_colors)
     obj.keywords = content.get(:keywords)
