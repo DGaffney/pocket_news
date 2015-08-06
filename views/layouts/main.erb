@@ -5,11 +5,21 @@
     <%= partial :"layouts/partials/_header" %>
   </head>
   <body>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=804356059655191";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
       <div class="container">
-        <% if @user %>
-          Signed in as <%= @user.username %> | <a href="/sign_out">Sign Out</a>
-        <% else %>
-          <a href="/oauth/connect">Log In</a>
+        <% if !@viewing_other_person %>
+          <% if @user %>
+            Signed in as <%= @user.username %> | <a href="/sign_out">Sign Out</a>
+          <% else %>
+            <a href="/oauth/connect">Log In</a>
+          <% end %>
         <% end %>
         <%= yield %>
       </div>

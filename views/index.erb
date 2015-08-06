@@ -1,8 +1,18 @@
-<h1>Pocket Stats</h1>
+<% if @viewing_other_person %>
+  <h1> <%= @user.username %>'s Pocket Stats</h1>
+  <p><a href="http://pocketstats.devingaffney.com">Click here</a> to see your own results</p>
+<% else %>
+  <h1> My Pocket Stats</h1>
+<% end %>
 <p>(Currently looking at results from <b><%= Article.count(username: @user.username) %></b> articles)</p>
+<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://pocketstats.devingaffney.com/<%= @user.hashid %>" data-text="Check out this infograph about how I use @Pocket" data-via="DGaff" data-related="Pocket">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+<div style="height:20px; vertical-align: top;"class="fb-share-button" data-href="http://pocketstats.devingaffney.com" data-layout="button"></div>
 <% if @user %>
   <%= partial :main %>
 <% else %>
 <% end %>
 <footer>
+  <!-- User ID: <%= @user.id %> ; User HashId: <%= @user.hashid %> -->
 </footer>

@@ -1,9 +1,13 @@
+get "/:hashid" do
+  @user = User.find(User.id_from_hashid(params[:hashid]))
+  @viewing_other_person = true
+  redirect '/oauth/connect' if @user.nil?
+  erb :"index"
+end
+
 get '/' do
-  if params[:user_id]
-    @user = User.find(params[:user_id])
-  elsif session[:user_id]
-    @user = User.find(session[:user_id])
-  end
+  @user = User.find(session[:user_id])
+  @viewing_other_person = false
   redirect '/oauth/connect' if @user.nil?
   erb :"index"
 end

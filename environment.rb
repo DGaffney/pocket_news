@@ -11,6 +11,7 @@ require 'sinatra/flash'
 require 'sidekiq'
 require 'sidekiq/web'
 require 'yaml'
+require 'hashids'
 
 SETTINGS = YAML.load(File.read(File.dirname(__FILE__)+"/settings.yaml"))
 MongoMapper.connection = Mongo::MongoClient.new(SETTINGS["mongo_host"], SETTINGS["mongo_port"], :pool_size => 25, :pool_timeout => 60)
