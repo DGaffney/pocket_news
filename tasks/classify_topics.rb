@@ -6,7 +6,7 @@ class ClassifyTopics
   
   def get_content(item_id, url)
     if (article = ArticleContent.first(item_id: item_id, url: url)).nil?
-      JSON.parse(ArticleContent.from_raw(JSON.parse(RestClient.get("http://api.embed.ly/1/extract?url=#{CGI.escape(url)}&maxwidth=500&key=#{SETTINGS["embedly_api_key"]}")), item_id, url).to_json)
+      JSON.parse(ArticleContent.from_raw(JSON.parse(RestClient.get("http://api.embed.ly/1/extract?url=#{CGI.escape(url)}&maxwidth=500&key=#{SETTINGS["embedly_api_key"].split(",").shuffle.first}")), item_id, url).to_json)
     else
       JSON.parse(article.to_json)
     end
