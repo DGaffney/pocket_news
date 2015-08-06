@@ -15,6 +15,11 @@ class ArticleTag
   
   def self.from_raw(content, item_id, url)
     obj = self.new
+    self.set_vals(content, item_id, url)
+    obj
+  end
+  
+  def self.set_vals(obj, content, item_id, url)
     obj.url = url
     obj.item_id = item_id
     obj.status = content.get(:status)
@@ -28,6 +33,5 @@ class ArticleTag
     obj.quotation_list = content.get(:quotation_list)
     obj.relation_list = content.get(:relation_list)
     obj.save!
-    obj
   end
 end

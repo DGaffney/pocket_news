@@ -19,4 +19,15 @@ class ClassifyTopics
       JSON.parse(tag.to_json)
     end
   end
+  
+  def self.fix_article_tags
+    ArticleTag.ensure_index("status.code")
+    ArticleTag.where(:"status.code" => "104").each do |article_tag|
+      article = JSON.parse(ArticleContent.first(item_id: article_tag.item_id, url: article_tag.url).to_json)
+      if article
+        content = JSON.parse(RestClient.post("https://api.meaningcloud.com/topics-1.2", {key: SETTINGS["meaningcloud"], lang: "en", txt: article.get(:content_stripped) || article.get(:description), txtf: "plain", tt: "a"}))
+        ArticleTag.set_vals(article_tag, content, article_tag.item_id, article_tag.url)
+      end
+    end
+  end
 end
