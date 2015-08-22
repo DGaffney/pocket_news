@@ -9,10 +9,12 @@ class IndicoApproach
   
   def indico_results(classname, object)
     objects = []
+    values = fields[classname].collect{|f| object.send(f)}.reject(&:empty?)
+    return [] if values.empty?
     results = {
-      text_tags: Indico.text_tags(fields[classname].collect{|f| object.send(f)}.reject(&:empty?)),
-      political: Indico.political(fields[classname].collect{|f| object.send(f)}.reject(&:empty?)),
-      sentiment: Indico.sentiment(fields[classname].collect{|f| object.send(f)}.reject(&:empty?))
+      text_tags: Indico.text_tags(values),
+      political: Indico.political(values),
+      sentiment: Indico.sentiment(values)
     }
     fields[classname].length.times do |x|
       objects << Hash[results.keys.zip(results.values.collect{|v| v[x-1]})].merge(field: fields[classname][x-1])
