@@ -1,6 +1,7 @@
 class IndicoApproach
   include Sidekiq::Worker
   def perform(classname, lookup)
+    return nil if classname == "Article" && lookup.keys.length == 2
     return if !IndicoResult.first(classname: classname, lookup: lookup).nil?
     object = classname.constantize.first(lookup)
     indico_results(classname, object).collect{|ir| IndicoResult.from_raw(ir, classname, lookup)}    
@@ -9,9 +10,9 @@ class IndicoApproach
   def indico_results(classname, object)
     objects = []
     results = {
-      text_tags: Indico.text_tags(fields[classname].collect{|f| object.send(f)}),
-      political: Indico.political(fields[classname].collect{|f| object.send(f)}),
-      sentiment: Indico.sentiment(fields[classname].collect{|f| object.send(f)})
+      text_tags: Indico.text_tags(fields[classname].collect{|f| object.send(f)}.reject(&:empty?)),
+      political: Indico.political(fields[classname].collect{|f| object.send(f)}.reject(&:empty?)),
+      sentiment: Indico.sentiment(fields[classname].collect{|f| object.send(f)}.reject(&:empty?))
     }
     fields[classname].length.times do |x|
       objects << Hash[results.keys.zip(results.values.collect{|v| v[x-1]})].merge(field: fields[classname][x-1])
