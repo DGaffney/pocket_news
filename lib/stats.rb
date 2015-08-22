@@ -138,6 +138,14 @@ class Stats
     Hash[ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
   end
   
+  def sentiment(username)
+    titles, excerpts = Article.where(username: username).fields(:resolved_title, :excerpt).collect{|a| [Indico.sentiment(a.resolved_title), Indico.sentiment(a.excerpt)]}.transpose.collect(&:counts)
+    {titles: titles, excerpts: excerpts}
+  end
+  
+  def political_leanings(username)
+  end
+
   def read_dont_read(username)
     dont_read = topics_i_dont_read(username)
     read = topics_i_read(username)

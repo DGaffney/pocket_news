@@ -20,4 +20,3 @@ class User
     Hashids.new("pocket_app").decode(id).first.to_i.to_s(16)
   end
 end
-User.id_from_hashid(User.first.hashid)
