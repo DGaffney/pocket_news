@@ -3,7 +3,7 @@ class IndicoApproach
   def perform(classname, lookup)
     return if !IndicoResult.first(classname: classname, lookup: lookup).nil?
     object = classname.constantize.first(lookup)
-    indico_results(classname, object).collect{|ir| IndicoResult.from_raw(ir, lookup)}    
+    indico_results(classname, object).collect{|ir| IndicoResult.from_raw(ir, classname, lookup)}    
   end
   
   def indico_results(classname, object)
