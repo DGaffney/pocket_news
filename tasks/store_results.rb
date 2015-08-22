@@ -8,3 +8,10 @@ class StoreResults
     sr.save!
   end
 end
+# while true
+#   User.each do |u|
+#     StoreResults.perform_async(u.username, "sentiment")
+#     StoreResults.perform_async(u.username, "political_leanings")
+#   end
+#   sleep(60*60)
+# end

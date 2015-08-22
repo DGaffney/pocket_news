@@ -139,11 +139,52 @@ class Stats
   end
   
   def sentiment(username)
-    titles, excerpts = Article.where(username: username).fields(:resolved_title, :excerpt).collect{|a| [Indico.sentiment(a.resolved_title), Indico.sentiment(a.excerpt)]}.transpose.collect(&:counts)
-    {titles: titles, excerpts: excerpts}
+    item_ids = Article.where(username: username).distinct(:item_id)
+    results = {}
+    item_ids.each do |item_id|
+      IndicoResult.where(lookup: {item_id: item_id}, classname: "Article", field: "excerpt").each do |ir|
+        results[:excerpt] ||= []
+        results[:excerpt] << ir.sentiment
+      end
+      IndicoResult.where(lookup: {item_id: item_id}, classname: "Article", field: "resolved_title").each do |ir|
+        results[:title] ||= []
+        results[:title] << ir.sentiment
+      end
+      IndicoResult.where("lookup.item_id" => item_id, field: "content").each do |ir|
+        results[:content] ||= []
+        results[:content] << ir.sentiment
+      end
+    end
+    Hash[results.collect{|k,v| [k, v.average]}]
   end
   
   def political_leanings(username)
+    item_ids = Article.where(username: username).distinct(:item_id)
+    results = {}
+    item_ids.each do |item_id|
+      IndicoResult.where(lookup: {item_id: item_id}, classname: "Article", field: "excerpt").each do |ir|
+        results[:excerpt] ||= {}
+        ir.political.each do |k,v|
+          results[:excerpt][k] ||= []
+          results[:excerpt][k] << v
+        end
+      end
+      IndicoResult.where(lookup: {item_id: item_id}, classname: "Article", field: "resolved_title").each do |ir|
+        results[:title] ||= {}
+        ir.political.each do |k,v|
+          results[:title][k] ||= []
+          results[:title][k] << v
+        end
+      end
+      IndicoResult.where("lookup.item_id" => item_id, classname: "ArticleContent", field: "content").each do |ir|
+        results[:content] ||= {}
+        ir.political.each do |k,v|
+          results[:content][k] ||= []
+          results[:content][k] << v
+        end
+      end
+    end
+    Hash[results.collect{|k,v| [k, Hash[v.collect{|kk,vv| [kk, vv.average]}]]}]
   end
 
   def read_dont_read(username)
