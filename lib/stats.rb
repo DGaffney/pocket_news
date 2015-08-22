@@ -143,4 +143,32 @@ class Stats
     read = topics_i_read(username)
     {dont_read: dont_read.reject{|k,v| read.keys.include?(k)}.to_a.first(50), read: read.reject{|k,v| dont_read.keys.include?(k)}.to_a.first(50)}
   end
+
+  def k_means
+    gz = Article.fields(:resolved_url).collect{|a| URI.parse(a.resolved_url).host.gsub("www.", "") rescue next};false
+    domains = gz.counts.sort_by{|k,v| v}.reverse.first(20).collect(&:first)
+    counts = {}
+    User.to_a.each do |u|
+      counts[u.username] = Hash[domains.zip(domains.collect{|x| 0})]
+      Article.where(username: u.username).each do |a|
+        domain = URI.parse(a.resolved_url).host.gsub("www.", "") rescue next
+        next if !domains.include?(domain)
+        counts[u.username][domain] += 1
+      end
+    end
+    data = []
+    index = []
+    counts.each do |username, counts|
+      data << counts.values.collect{|x| Math.log(x+1)}
+      index << username
+    end
+    kmeans = KMeans.new(data, :centroids => 4)
+    groups = []
+    kmeans.view.each do |group|
+    groups << []
+      group.each do |i|
+        groups.last << index[i]
+      end
+    end
+  end
 end

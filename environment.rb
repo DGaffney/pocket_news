@@ -12,6 +12,7 @@ require 'sidekiq'
 require 'sidekiq/web'
 require 'yaml'
 require 'hashids'
+require 'sentimental'
 
 SETTINGS = YAML.load(File.read(File.dirname(__FILE__)+"/settings.yaml"))
 MongoMapper.connection = Mongo::MongoClient.new(SETTINGS["mongo_host"], SETTINGS["mongo_port"], :pool_size => 25, :pool_timeout => 60)
@@ -33,3 +34,10 @@ Dir[File.dirname(__FILE__) + '/tasks/*.rb'].each {|file| require file }
 set :erb, :layout => :'layouts/main'
 enable :sessions
 helpers Sinatra::Partials
+
+# Article.fields(:resolved_url, :item_id).to_a.each do |article|
+#   puts article.id
+#   if ArticleTag.first(item_id: article.item_id, url: article.resolved_url).nil? || ArticleContent.first(item_id: article.item_id, url: article.resolved_url).nil?
+#     ClassifyTopics.new.perform(article.item_id, article.resolved_url)
+#   end
+# end
