@@ -14,7 +14,7 @@ class IndicoApproach
       sentiment: Indico.sentiment(fields[classname].collect{|f| object.send(f)})
     }
     fields[classname].length.times do |x|
-      objects << Hash[results.keys.zip(results.values.collect{|v| v[x-1]})]
+      objects << Hash[results.keys.zip(results.values.collect{|v| v[x-1]})].merge(field: fields[classname][x-1])
     end
     objects
   end

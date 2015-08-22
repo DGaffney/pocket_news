@@ -2,6 +2,7 @@ class IndicoResult
   include MongoMapper::Document
   key :lookup, Hash
   key :classname, String
+  key :field, String
   key :text_tags, Hash
   key :political, Hash
   key :sentiment, Float
@@ -9,6 +10,7 @@ class IndicoResult
   def self.from_raw(content, classname, lookup)
     obj = self.new
     obj.classname = classname
+    obj.field = content.get(:field)
     obj.lookup = lookup
     obj.text_tags = content.get(:text_tags)
     obj.political = content.get(:political)
