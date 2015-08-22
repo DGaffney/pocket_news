@@ -14,11 +14,11 @@ require 'yaml'
 require 'hashids'
 require 'sentimental'
 require 'indico'
-Indico.api_key = SETTINGS["indico"]
 
 Sentimental.load_defaults
 Sentimental.threshold = 0.1
 SETTINGS = YAML.load(File.read(File.dirname(__FILE__)+"/settings.yaml"))
+Indico.api_key = SETTINGS["indico"]
 MongoMapper.connection = Mongo::MongoClient.new(SETTINGS["mongo_host"], SETTINGS["mongo_port"], :pool_size => 25, :pool_timeout => 60)
 MongoMapper.database = SETTINGS["mongo_db"]
 CALLBACK_URL = SETTINGS["callback_url"]
