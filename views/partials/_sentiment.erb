@@ -1,0 +1,15 @@
+<h2>Sentiment Analysis</h2>
+<p>(Negative is empty, Positive is full)</p>
+<ul>
+  <li>Article Titles: <span class="title"></span>% Positive</li>
+  <li>Article Excerpt: <span class="excerpt"></span>% Positive</li>
+  <li>Article Content: <span class="content"></span>% Positive</li>
+</ul>
+<script type="text/javascript">
+$.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+  var parsed = $.parseJSON(result)
+  $( "span.title" ).replaceWith( String(Math.round(parsed.title * 10000) / 100) );
+  $( "span.excerpt" ).replaceWith( String(Math.round(parsed.excerpt * 10000) / 100) );
+  $( "span.content" ).replaceWith( String(Math.round(parsed.content * 10000) / 100) );
+}});
+		</script>

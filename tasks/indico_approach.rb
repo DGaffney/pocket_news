@@ -9,7 +9,7 @@ class IndicoApproach
   
   def indico_results(classname, object)
     objects = []
-    values = fields[classname].collect{|f| object.send(f)}.reject(&:empty?)
+    values = fields[classname].collect{|f| object.send(f)}.compact.reject(&:empty?)
     return [] if values.empty?
     results = {
       text_tags: Indico.text_tags(values),

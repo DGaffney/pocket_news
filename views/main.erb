@@ -1,5 +1,13 @@
 <% if @user %>
 <div class="row">
+  <div class="span6">
+    <%= partial :"partials/_political_leanings", locals: {name: "political_leanings", user_id: @user.id} %>
+  </div>
+  <div class="span6">
+    <%= partial :"partials/_sentiment", locals: {name: "sentiment", user_id: @user.id} %>
+  </div>
+</div>
+<div class="row">
   <div class="span12">
     <%= partial :"partials/_punchcard", locals: {name: "punchcard", user_id: @user.id} %>
   </div>
@@ -9,6 +17,7 @@
     <%= partial :"partials/_timeline", locals: {name: "timeline", user_id: @user.id} %>
   </div>
 </div>
+
 <div class="row">
   <div class="span5">
     <%= partial :"partials/_read_unread", locals: {name: "read_unread", user_id: @user.id} %>

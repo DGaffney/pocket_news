@@ -1,7 +1,7 @@
 class Stats
 
   def retrieve(username, name)
-    StatResult.first(username: username, name: name).result rescue get(username, name)
+    StatResult.first(username: username, name: name).value rescue get(username, name)
   end
 
   def get(username, name)

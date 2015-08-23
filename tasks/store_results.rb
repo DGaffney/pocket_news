@@ -13,5 +13,7 @@ end
 #     StoreResults.perform_async(u.username, "sentiment")
 #     StoreResults.perform_async(u.username, "political_leanings")
 #   end
-#   sleep(60*60)
 # end
+
+# StoreResults.new.perform("itsme@devingaffney.com", "political_leanings")
+# StatResult.where(name: ["sentiment", "political_leanings"])

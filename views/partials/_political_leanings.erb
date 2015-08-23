@@ -1,0 +1,102 @@
+<h2><%= name.split("_").collect{|x| x.capitalize}.join(" ") %></h2>
+<div id="<%= name %>">
+  
+</div>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 460 - margin.left - margin.right,
+    height = 460 - margin.top - margin.bottom;
+
+var x0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var svg = d3.select("#political_leanings").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// var colorMap = function(i){
+//   if (i == 0){
+//     return "#0f7f32"
+//   } else {
+//     return "#ff0000"
+//   }
+// }
+var colorMap = d3.scale.ordinal()
+    .range(["#0f7f32", "#2a01bf", "#d8171e", "#fdcd00"]);
+
+
+$.ajax({url: "/stats/<%= user_id %>/<%= name %>.json", success: function(result){
+  var parsed = $.parseJSON(result)
+  data = [{contentType: "Title", ages: [{color: "#0f7f32", name: "Green", value: parsed.title.Green}, {color: "#2a01bf", name: "Liberal", value: parsed.title.Liberal}, {color: "#d8171e", name: "Conservative", value: parsed.title.Conservative}, {color: "#fdcd00", name: "Libertarian", value: parsed.title.Libertarian}]}, {contentType: "Excerpt", ages: [{color: "#0f7f32", name: "Green", value: parsed.excerpt.Green}, {color: "#2a01bf", name: "Liberal", value: parsed.excerpt.Liberal}, {color: "#d8171e", name: "Conservative", value: parsed.excerpt.Conservative}, {color: "#fdcd00", name: "Libertarian", value: parsed.excerpt.Libertarian}]}, {contentType: "Content", ages: [{color: "#0f7f32", name: "Green", value: parsed.content.Green}, {color: "#2a01bf", name: "Liberal", value: parsed.content.Liberal}, {color: "#d8171e", name: "Conservative", value: parsed.content.Conservative}, {color: "#fdcd00", name: "Libertarian", value: parsed.content.Libertarian}]}]
+  x0.domain(["Title", "Excerpt", "Content"]);
+  x1.domain(["Green", "Liberal", "Conservative", "Libertarian"]).rangeRoundBands([0, x0.rangeBand()]);
+  y.domain([0, 1]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Percent");
+
+  var state = svg.selectAll(".state")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x0(d.contentType) + ",0)"; });
+
+  state.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.name); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); })
+      .style("fill", function(d) { return d.color; });
+
+  var legend = svg.selectAll(".legend")
+      .data(["Green", "Liberal", "Conservative", "Libertarian"])
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 58)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", colorMap);
+
+  legend.append("text")
+      .attr("x", width - 64)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+}});
+
+</script>
