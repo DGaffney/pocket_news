@@ -113,7 +113,7 @@ class Array
     summary_statistics[:median] = self.compact.median 
     summary_statistics[:mode] = self.mode
     summary_statistics[:mean] = self.average
-    summary_statistics[:standard_deviation] = self.standard_deviation
+    summary_statistics[:standard_deviation] = self.compact.standard_deviation
     summary_statistics[:sum] = self.sum
     summary_statistics[:sample_variance] = self.compact.sample_variance
     summary_statistics[:elbow] = self.elbow
