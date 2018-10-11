@@ -14,7 +14,7 @@ class Stats
 
   def word_counts(username)
     results = {"read" => [], "unread" => []}
-    Article.where(username: username).fields(:time_read, :word_count).each do |article|
+    Article.where(username: username).project(:time_read => 1, :word_count => 1).each do |article|
       read = article.time_read.nil? ? "unread" : "read"
       results[read] << article.word_count if article.word_count != 0
     end
@@ -27,7 +27,7 @@ class Stats
   
   def read_unread(username)
     results = {"read" => 0, "unread" => 0}
-    Article.where(username: username).fields(:time_read).each do |article|
+    Article.where(username: username).project(:time_read => 1).each do |article|
       read = article.time_read.nil? ? "unread" : "read"
       results[read] += 1
     end
@@ -38,8 +38,8 @@ class Stats
   
   def top_terms(username)
     result = {name: "all", children: []}
-    item_ids = Article.where(username: username).fields(:item_id).collect(&:item_id)
-    tags = ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}].flatten}
+    item_ids = Article.where(username: username).project(:item_id => 1).collect(&:item_id)
+    tags = ArticleContent.where(item_id: item_ids).project(:keywords => 1, :entities => 1).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}].flatten}
     tags.flatten.counts.sort_by{|k,v| v}.reverse.first(100).each do |k,v|
       result[:children] << {name: k, size: v}
     end
@@ -47,9 +47,9 @@ class Stats
   end
   
   def term_network(username)
-    item_ids = Article.where(username: username).fields(:item_id).collect(&:item_id)
-    tags = ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}].flatten}
-    tags = ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}].flatten}
+    item_ids = Article.where(username: username).project(:item_id => 1).collect(&:item_id)
+    tags = ArticleContent.where(item_id: item_ids).project(:keywords => 1, :entities => 1).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}].flatten}
+    tags = ArticleContent.where(item_id: item_ids).project(:keywords => 1, :entities => 1).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}].flatten}
     first_network = {nodes: [], edges: {}}
     term_counts = tags.flatten.counts
     top_terms = term_counts.sort_by{|k,v| v}.first(250).collect(&:first)
@@ -78,7 +78,7 @@ class Stats
   end
   
   def timeline_from_query(query)
-    Article.where(query).sort(:time_added).fields(:time_added).collect(&:time_added).collect{|t| Time.parse(t.strftime("%Y-%m")+"-01").to_i*1000}.counts.to_a
+    Article.where(query).sort(:time_added).project(:time_added => 1).collect(&:time_added).collect{|t| Time.parse(t.strftime("%Y-%m")+"-01").to_i*1000}.counts.to_a
   end
 
   def timeline(username)
@@ -89,7 +89,7 @@ class Stats
   end
   
   def sources(username)
-    Article.where(username: username).fields(:resolved_url).collect{|a| URI.parse(a.resolved_url).host rescue nil}.compact.counts.sort_by{|k,v| v}.reverse.first(20)
+    Article.where(username: username).project(:resolved_url => 1).collect{|a| URI.parse(a.resolved_url).host rescue nil}.compact.counts.sort_by{|k,v| v}.reverse.first(20)
   end
   
   def weekdays
@@ -102,7 +102,7 @@ class Stats
 
   def punchcard_added(username)
     result = {}
-    counts = Article.where(username: username).fields(:time_added).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts
+    counts = Article.where(username: username).project(:time_added => 1).collect{|a| a.time_added.strftime("%A %H").split(" ")}.counts
     weekdays.each do |day|
       result[day] = {label: day, values: default_punchcard}
       counts.select{|c| c.first == day}.each do |k,v|
@@ -114,7 +114,7 @@ class Stats
   
   def punchcard_read(username)
     result = {}
-    counts = Article.where(username: username, :time_read.ne => nil).fields(:time_read).collect{|a| a.time_read.strftime("%A %H").split(" ")}.counts
+    counts = Article.where(username: username, :time_read.ne => nil).project(:time_read => 1).collect{|a| a.time_read.strftime("%A %H").split(" ")}.counts
     weekdays.each do |day|
       result[day] = {label: day, values: default_punchcard}
       counts.select{|c| c.first == day}.each do |k,v|
@@ -129,13 +129,13 @@ class Stats
   end
 
   def topics_i_dont_read(username)
-    item_ids = Article.where(username: username, :time_read => nil).fields(:item_id).collect(&:item_id)
-    Hash[ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
+    item_ids = Article.where(username: username, :time_read => nil).project(:item_id => 1).collect(&:item_id)
+    Hash[ArticleContent.where(item_id: item_ids).project(:keywords => 1, :entities => 1).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
   end
   
   def topics_i_read(username)
-    item_ids = Article.where(username: username, :time_read.ne => nil).fields(:item_id).collect(&:item_id)
-    Hash[ArticleContent.where(item_id: item_ids).fields(:keywords, :entities).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
+    item_ids = Article.where(username: username, :time_read.ne => nil).project(:item_id => 1).collect(&:item_id)
+    Hash[ArticleContent.where(item_id: item_ids).project(:keywords => 1, :entities => 1).collect{|ac| [ac.keywords.collect{|x| x.get(:name)}, ac.entities.collect{|x| x.get(:name)}]}.flatten.counts.sort_by{|k,v| v}.reverse.first(200)]
   end
   
   def sentiment(username)
@@ -194,7 +194,7 @@ class Stats
   end
 
   def k_means
-    gz = Article.fields(:resolved_url).collect{|a| URI.parse(a.resolved_url).host.gsub("www.", "") rescue next};false
+    gz = Article.project(:resolved_url => 1).collect{|a| URI.parse(a.resolved_url).host.gsub("www.", "") rescue next};false
     domains = gz.counts.sort_by{|k,v| v}.reverse.first(20).collect(&:first)
     counts = {}
     User.to_a.each do |u|

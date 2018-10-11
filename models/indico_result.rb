@@ -23,7 +23,7 @@ class IndicoResult
     Article.distinct(:item_id).each do |item_id|
       IndicoApproach.perform_async("Article", {item_id: item_id})
     end
-    ArticleContent.fields(:url, :item_id).to_a.each do |ac|
+    ArticleContent.project(:url => 1, :item_id => 1).to_a.each do |ac|
       IndicoApproach.perform_async("ArticleContent", {url: ac.url, item_id: ac.item_id})
     end
   end
