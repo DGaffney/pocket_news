@@ -1,25 +1,25 @@
 class Article
-  include MongoMapper::Document
-  key :username, String
-  key :item_id, Integer
-  key :resolved_id, Integer
-  key :given_url, String
-  key :given_title, String
-  key :favorite, Boolean
-  key :status, Boolean
-  key :time_added, Time
-  key :time_updated, Time
-  key :time_read, Time
-  key :time_favorited, Time
-  key :sort_id, Integer
-  key :resolved_title, String
-  key :resolved_url, String
-  key :excerpt, String
-  key :is_article, Boolean
-  key :is_index, Boolean
-  key :has_video, Boolean
-  key :has_image, Boolean
-  key :word_count, Integer
+  include Mongoid::Document
+  field :username, type: String
+  field :item_id, type: Integer
+  field :resolved_id, type: Integer
+  field :given_url, type: String
+  field :given_title, type: String
+  field :favorite, type: Boolean
+  field :status, type: Boolean
+  field :time_added, type: Time
+  field :time_updated, type: Time
+  field :time_read, type: Time
+  field :time_favorited, type: Time
+  field :sort_id, type: Integer
+  field :resolved_title, type: String
+  field :resolved_url, type: String
+  field :excerpt, type: String
+  field :is_article, type: Boolean
+  field :is_index, type: Boolean
+  field :has_video, type: Boolean
+  field :has_image, type: Boolean
+  field :word_count, type: Integer
   
   def self.from_raw(article, username)
     obj_is_new = self.first(item_id: article.get(:item_id).to_i).nil?

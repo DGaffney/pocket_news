@@ -1,17 +1,17 @@
 class ArticleTag
-  include MongoMapper::Document
-  key :item_id
-  key :url
-  key :status
-  key :entity_list
-  key :concept_list
-  key :time_expression_list
-  key :money_expression_list
-  key :uri_list
-  key :phone_expression_list
-  key :other_expression_list
-  key :quotation_list
-  key :relation_list
+  include Mongoid::Document
+  field :item_id
+  field :url
+  field :status
+  field :entity_list
+  field :concept_list
+  field :time_expression_list
+  field :money_expression_list
+  field :uri_list
+  field :phone_expression_list
+  field :other_expression_list
+  field :quotation_list
+  field :relation_list
   
   def self.from_raw(content, item_id, url)
     obj = self.new

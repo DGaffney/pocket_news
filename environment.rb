@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'stopwords'
 require 'rest-client'
 require 'pocket-ruby'
-require 'mongo_mapper'
+require 'mongoid'
 require 'json'
 require 'pry'
 require 'sinatra'
@@ -19,8 +19,9 @@ Sentimental.load_defaults
 Sentimental.threshold = 0.1
 SETTINGS = YAML.load(File.read(File.dirname(__FILE__)+"/settings.yaml"))
 Indico.api_key = SETTINGS["indico"]
-MongoMapper.connection = Mongo::MongoClient.new(SETTINGS["mongo_host"], SETTINGS["mongo_port"], :pool_size => 25, :pool_timeout => 60)
-MongoMapper.database = SETTINGS["mongo_db"]
+Mongoid.load!("mongoid.yml", :production)
+#MongoMapper.connection = Mongo::MongoClient.new(SETTINGS["mongo_host"], SETTINGS["mongo_port"], :pool_size => 25, :pool_timeout => 60)
+#MongoMapper.database = SETTINGS["mongo_db"]
 CALLBACK_URL = SETTINGS["callback_url"]
 Pocket.configure do |config|
   config.consumer_key = SETTINGS["pocket_consumer_key"]

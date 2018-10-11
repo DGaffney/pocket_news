@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 gem 'rack', '~> 1.4.5'
-gem 'mongo_mapper'
+gem 'mongoid'
 gem 'rake'
 gem 'bson_ext'
 gem 'json'

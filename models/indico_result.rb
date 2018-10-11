@@ -1,12 +1,12 @@
 class IndicoResult
-  include MongoMapper::Document
-  key :lookup, Hash
-  key :classname, String
-  key :field, String
-  key :text_tags, Hash
-  key :political, Hash
-  key :sentiment, Float
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  field :lookup, type: Hash
+  field :classname, type: String
+  field :field, type: String
+  field :text_tags, type: Hash
+  field :political, type: Hash
+  field :sentiment, type: Float
   def self.from_raw(content, classname, lookup)
     obj = self.new
     obj.classname = classname
