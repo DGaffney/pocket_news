@@ -1,6 +1,6 @@
 class StatResult
-  include MongoMapper::Document
-  key :username
-  key :name
-  key :value
+  include Mongoid::Document
+  field :username
+  field :name
+  field :value
 end

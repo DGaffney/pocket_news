@@ -1,8 +1,8 @@
 class User
-  include MongoMapper::Document
-  key :username, String
-  key :access_token, String
-  timestamps!
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  field :username, type: String
+  field :access_token, type: String
   
   def client
     Pocket::Client.new(access_token: self.access_token)
