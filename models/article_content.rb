@@ -14,6 +14,7 @@ class ArticleContent
   field :cache_age
   field :language
   field :app_links
+  field :content_url
   field :original_url
   field :url
   field :media
