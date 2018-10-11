@@ -2,6 +2,7 @@ class ArticleContent
   include MongoMapper::Document
   key :item_id
   key :url
+  key :content_url
   key :provider_url
   key :description
   key :embeds
@@ -46,7 +47,7 @@ class ArticleContent
     obj.language = content.get(:language)
     obj.app_links = content.get(:app_links)
     obj.original_url = content.get(:original_url)
-    obj.url = content.get(:url)
+    obj.content_url = content.get(:url)
     obj.media = content.get(:media)
     obj.title = content.get(:title)
     obj.offset = content.get(:offset)
