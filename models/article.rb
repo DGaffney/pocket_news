@@ -22,7 +22,7 @@ class Article
   field :word_count, type: Integer
   
   def self.from_raw(article, username)
-    obj_is_new = self.first(item_id: article.get(:item_id).to_i).nil?
+    obj_is_new = (self.find(item_id: article.get(:item_id).to_i) rescue nil).nil?
     obj = self.first_or_create(item_id: article.get(:item_id).to_i, username: username)
     obj.resolved_id = article.get(:resolved_id).to_i
     obj.given_url = article.get(:given_url)
