@@ -110,7 +110,7 @@ class Array
     summary_statistics[:second_quartile] = self.percentile(0.5)
     summary_statistics[:third_quartile] = self.percentile(0.75)
     summary_statistics[:max] = self.max
-    summary_statistics[:median] = self.median 
+    summary_statistics[:median] = self.compact.median 
     summary_statistics[:mode] = self.mode
     summary_statistics[:mean] = self.average
     summary_statistics[:standard_deviation] = self.standard_deviation
