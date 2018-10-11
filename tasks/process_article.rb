@@ -4,7 +4,7 @@ class ProcessArticle
   
   def perform(article, username, count)
     Article.from_raw(article, username)
-    if Article.count(username: username)/count.to_f > 0.95
+    if Article.where(username: username).count/count.to_f > 0.95
       ["word_counts", "read_unread", "top_terms", "term_network"].each do |stat|
         StoreResults.perform_async(username, stat)
       end
