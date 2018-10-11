@@ -116,7 +116,7 @@ class Array
     summary_statistics[:standard_deviation] = self.compact.standard_deviation
     summary_statistics[:sum] = self.sum
     summary_statistics[:sample_variance] = self.compact.sample_variance
-    summary_statistics[:elbow] = self.elbow
+    summary_statistics[:elbow] = self.compact.elbow
     summary_statistics[:n] = self.length
     summary_statistics
   end
