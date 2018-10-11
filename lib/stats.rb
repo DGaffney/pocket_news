@@ -18,6 +18,8 @@ class Stats
       read = article.time_read.nil? ? "unread" : "read"
       results[read] << article.word_count if article.word_count != 0
     end
+    results["read"] = results["read"].compact
+    results["unread"] = results["unread"].compact
     read_stats = results["read"].all_stats
     unread_stats = results["unread"].all_stats
     results["read"] = results["read"].reject{|x| x > read_stats[:mean]+read_stats[:standard_deviation]*2 || x < read_stats[:mean]-read_stats[:standard_deviation]*2}
