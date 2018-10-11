@@ -5,6 +5,7 @@ get '/weather' do
 end
 
 get '/' do
+binding.pry
   @user = User.find(session[:user_id])
   @viewing_other_person = false
   redirect '/oauth/connect' if @user.nil?

@@ -1,4 +1,5 @@
 class ArticleContent
+  include Mongoid::Document
   field :item_id
   field :url
   field :provider_url
